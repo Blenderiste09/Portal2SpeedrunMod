@@ -69,6 +69,7 @@ public:
     void ClientCommand(const char* fmt, ...);
     void Chat(const char* fmt, ...);
     void Cleanup();
+    void Setpos(const Vector &dest);
 
     void ForceAct5MenuBackground();
     bool ProcessScriptRequest(float accessType, int id, float value, float* result);

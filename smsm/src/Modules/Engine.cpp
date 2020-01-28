@@ -1,28 +1,28 @@
 #include "Engine.hpp"
 
+#include "Console.hpp"
 #include "Interface.hpp"
 #include "Offsets.hpp"
+#include "Server.hpp"
 #include "Utils.hpp"
 #include "Variable.hpp"
-#include "Console.hpp"
 
 #include "SMSM.hpp"
 
 REDECL(Engine::TraceRay);
-DETOUR(Engine::TraceRay, const Ray_t& ray, unsigned int fMask, ITraceFilter* pTraceFilter, CGameTrace* pTrace) {
+DETOUR(Engine::TraceRay, const Ray_t& ray, unsigned int fMask, ITraceFilter* pTraceFilter, CGameTrace* pTrace)
+{
     float requestResult = 0;
     if (smsm.ProcessScriptRequest(ray.m_Start.x, (int)ray.m_Start.y, ray.m_Start.z, &requestResult)) {
         pTrace->fraction = requestResult;
         pTrace->fractionleftsolid = -requestResult + 1;
         //console->Print("nice >:] %f %f\n");
         return 0;
-    }
-    else {
+    } else {
         auto result = Engine::TraceRay(thisptr, ray, fMask, pTraceFilter, pTrace);
         return result;
     }
 }
-
 
 Variable sv_cheats;
 
@@ -30,6 +30,7 @@ Engine::Engine()
     : Module()
 {
 }
+
 bool Engine::Init()
 {
     if (auto engine = Interface::Create(this->Name(), "VEngineClient0", false)) {
@@ -62,6 +63,12 @@ bool Engine::Init()
 
     if (auto g_VEngineServer = Interface::Create(this->Name(), "VEngineServer0", false)) {
         this->ClientCommand = g_VEngineServer->Original<_ClientCommand>(Offsets::ClientCommand);
+    }
+
+	
+	if (auto debugoverlay = Interface::Create(this->Name(), "VDebugOverlay0", false)) {
+        AddLineOverlay = debugoverlay->Original<_AddLineOverlay>(Offsets::AddLineOverlay);
+        Interface::Delete(debugoverlay);
     }
 
     sv_cheats = Variable("sv_cheats");

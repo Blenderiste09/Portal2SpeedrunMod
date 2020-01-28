@@ -26,6 +26,9 @@ int ClientCommand;
 // CBaseHudChat
 int ChatPrintf;
 
+// CIVDebugOverlay
+int AddLineOverlay;
+
 // CCommandBuffer
 int m_bWaitEnabled;
 
@@ -35,6 +38,11 @@ int TraceRay;
 // CBaseEntity
 int m_fFlags;
 int m_nTickBase;
+int S_m_vecAbsOrigin;
+int S_m_angAbsRotation;
+
+// CServerGameDLL
+int Think;
 
 // Others
 int GetClientStateFunction;
@@ -48,4 +56,6 @@ int CCommandBufferSize;
 int GetHud;
 int FindElement;
 int ProcessMovement;
+int UTIL_PlayerByIndex;
+int gpGlobals;
 }

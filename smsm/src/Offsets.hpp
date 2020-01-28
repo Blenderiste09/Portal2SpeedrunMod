@@ -29,12 +29,21 @@ extern int ChatPrintf;
 // CCommandBuffer
 extern int m_bWaitEnabled;
 
+// CIVDebugOverlay
+extern int AddLineOverlay;
+
 // IEngineTrace
 extern int TraceRay;
 
 // CBaseEntity
 extern int m_fFlags;
 extern int m_nTickBase;
+extern int S_m_vecAbsOrigin;
+extern int S_m_angAbsRotation;
+
+// CServerGameDLL
+extern int Think;
+
 
 // Others
 extern int GetClientStateFunction;
@@ -48,4 +57,6 @@ extern int CCommandBufferSize;
 extern int GetHud;
 extern int FindElement;
 extern int ProcessMovement;
+extern int UTIL_PlayerByIndex;
+extern int gpGlobals;
 }

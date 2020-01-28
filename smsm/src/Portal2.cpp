@@ -32,12 +32,20 @@ void Portal2::LoadOffsets()
     ProcessMovement = 1; // CGameMovement
     m_fFlags = 204; // CBaseEntity
     m_nTickBase = 3792; // CBaseEntity, m_nTickBase -> 3792
+    AddLineOverlay = 4; // CIVDebugOverlay
 
     // client.dll
 
     GetHud = 125; // cc_leaderboard_enable
     FindElement = 135; // cc_leaderboard_enable
     ChatPrintf = 22; // CBaseHudChat
+
+	// server.dll
+    S_m_vecAbsOrigin = 460; // CBaseEntity
+    S_m_angAbsRotation = 472; // CBaseEntity
+    Think = 31; // CServerGameDLL
+    UTIL_PlayerByIndex = 39; // CServerGameDLL::Think
+    gpGlobals = 14; // UTIL_PlayerByIndex
 
     // vstdlib.dll
 

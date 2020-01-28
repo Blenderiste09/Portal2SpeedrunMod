@@ -697,6 +697,8 @@ struct matrix3x4_t {
     float m_flMatVal[3][4];
 };
 
+#define MAX_TRACE_LENGTH 1.732050807569 * 2 * 16384
+
 struct Ray_t {
     VectorAligned m_Start; // starting point, centered within the extents
     VectorAligned m_Delta; // direction + length of the ray
