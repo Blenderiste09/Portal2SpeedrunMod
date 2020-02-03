@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <float.h>
 
 #ifdef _WIN32
 #define __funcc __thiscall
@@ -19,6 +20,17 @@ struct Vector {
     {
         return std::sqrt(x * x + y * y);
     }
+	inline Vector Normalize()
+	{
+         Vector res;
+         float radius = sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
+         float iradius = 1.f / (radius + FLT_EPSILON);
+
+         res.x = x * iradius;
+         res.y = y * iradius;
+         res.z = z * iradius;
+         return res;
+	}
     inline Vector operator*(float fl)
     {
         Vector res;
@@ -33,6 +45,22 @@ struct Vector {
         res.x = x + vec.x;
         res.y = y + vec.y;
         res.z = z + vec.z;
+        return res;
+    }
+    inline Vector operator-(Vector vec)
+    {
+        Vector res;
+        res.x = x - vec.x;
+        res.y = y - vec.y;
+        res.z = z - vec.z;
+        return res;
+    }
+    inline Vector operator/(float f)
+    {
+        Vector res;
+        res.x = x / f;
+        res.y = y / f;
+        res.z = z / f;
         return res;
     }
     inline float& operator[](int i)

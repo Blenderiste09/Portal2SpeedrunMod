@@ -2,6 +2,7 @@
 #include "Module.hpp"
 #include "Utils.hpp"
 #include "Variable.hpp"
+#include "Command.hpp"
 
 class Engine : public Module {
 public:
@@ -26,15 +27,23 @@ public:
     void* s_CommandBuffer = nullptr;
 
     Engine();
+
     bool Init() override;
     void Shutdown() override;
     const char* Name() override { return MODULE("engine"); }
 
-    // IEngineTrace::TraceRay
+    
+	// CClientState::Disconnect
+    DECL_DETOUR(Disconnect, bool bShowMainMenu);
+
+	// CClientState::SetSignonState
+    DECL_DETOUR(SetSignonState, int state, int count, void* unk);
+
+	// IEngineTrace::TraceRay
     DECL_DETOUR(TraceRay, const Ray_t& ray, unsigned int fMask, ITraceFilter* pTraceFilter, CGameTrace* pTrace);
 
     template <typename T>
-    bool ThrowRay(Vector &origin, Vector &direction, CGameTrace& tr, T& traceFilter, float maxTraceLength = MAX_TRACE_LENGTH)
+    bool ThrowRay(Vector& origin, Vector& direction, CGameTrace& tr, T& traceFilter, float maxTraceLength = MAX_TRACE_LENGTH)
     {
         Ray_t ray;
         ray.m_IsRay = true;
@@ -46,13 +55,7 @@ public:
 
         engine->TraceRay(engine->engineTrace->ThisPtr(), ray, MASK_PLAYERSOLID, &traceFilter, &tr);
 
-        /*
-	   That m_Start.x condition is literally pointless, but if it's gone then
-	   it would seem like TraceRay sets it to 0. It makes no fucking sense
-	   and I gave up on trying to find out why it's happening, so I'm just leaving it here.
-	   Fuck.
-	   */
-        if (ray.m_Start.x == origin.x && tr.fraction < 1) {
+        if (tr.fraction < 1) {
             return true;
         } else {
             return false;

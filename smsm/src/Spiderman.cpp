@@ -4,21 +4,35 @@
 #include "Modules/Engine.hpp"
 #include "Modules/Server.hpp"
 
+#include "Offsets.hpp"
+
 #include "SMSM.hpp"
 
 Spiderman spiderman;
 
-Spiderman::Spiderman()
+Spiderman::Spiderman() : wantsToSwing(false)
 {
 }
 
+void Spiderman::ProcessMovement(void* pPlayer, CMoveData* pMove)
+{
+    int tickBase = *reinterpret_cast<int*>((uintptr_t)pPlayer + Offsets::m_nTickBase);
+    if (tickBase > this->lastTickBase) {
+        float ft = (tickBase - lastTickBase) / 60.0f;
+        
+		this->isDucking = *reinterpret_cast<bool*>((uintptr_t)pPlayer + Offsets::m_bDucking);
+
+        if (this->wantsToSwing) {
+            this->Swing(pPlayer, pMove, ft);
+        }
+    }
+
+    lastTickBase = tickBase;
+}
 
 void Spiderman::ThrowWeb()
 {
-    CGameTrace tr;
-    CTraceFilterSimple filter;
-
-	QAngle angle = server->angle;
+    QAngle angle = server->angle;
 
     float X = DEG2RAD(angle.x);
     float Y = DEG2RAD(angle.y);
@@ -31,21 +45,61 @@ void Spiderman::ThrowWeb()
 
     Vector direction(cosY * cosX, sinY * cosX, -sinX);
     Vector pos = server->pos;
-    pos.z += 64.0f;
+    if (!this->isDucking) {
+        pos.z += 64.0f;
+    }
 
-    if (engine->ThrowRay(pos, direction, tr, filter)) {
-        auto pn = tr.plane.normal;
-        Vector dest = tr.endpos;
-        dest.x += 32 * pn.x;
-        dest.y += 32 * pn.y;
-        dest.z += 64 * pn.z;
+    CGameTrace tr;
+    CTraceFilterSimple traceFilter;
 
-		smsm.Setpos(dest);
-        //engine->AddLineOverlay(pos, tr.endpos, 255, 0, 0, false, 10);
+    if (!engine->ThrowRay(pos, direction, tr, traceFilter)) {
+        this->wantsToSwing = false;
+        return;
+    }
+
+    Vector length;
+    Math::VectorSubstract(tr.endpos, pos, length);
+    this->tetherLength = length.Length();
+    this->tetherPoint = tr.endpos;
+    this->wantsToSwing = true;
+
+    engine->AddLineOverlay(pos, this->tetherPoint, 255, 255, 255, false, 0.25);
+
+    return;
+}
+
+void Spiderman::Swing(void* pPlayer, CMoveData* pMove, float ft)
+{
+    Vector pos = pMove->m_vecAbsOrigin;
+    if (!this->isDucking) {
+        pos.z += 64.0f;
+    }
+
+    bool holdingSpace = (pMove->m_nButtons & 0x2);
+    if (holdingSpace && this->tetherLength > 64) {
+        this->tetherLength -= 3;
+    }
+
+    Vector testPosition = pos + pMove->m_vecVelocity * ft; //Position after the frame
+    if ((testPosition - tetherPoint).Length() > tetherLength) { //If next distance is > rope length
+        pMove->m_vecVelocity = (tetherPoint + ((testPosition - tetherPoint).Normalize() * tetherLength) - pos) / ft;
     }
 }
 
-CON_COMMAND(test, "test")
+void IN_WebUp(const CCommand& args)
 {
-    spiderman.ThrowWeb();
+    if (smsm.modeParams[SpidermanMode]) {
+        if (spiderman.wantsToSwing) {
+            spiderman.wantsToSwing = false;
+        } else {
+            spiderman.ThrowWeb();
+        }
+    }
 }
+
+void IN_WebDown(const CCommand& args)
+{
+}
+
+Command in_webup("+web", IN_WebUp, "Throw a web (spiderman-mode only).");
+Command in_webdown("-web", IN_WebDown, "Throw a web (spiderman-mode only).");

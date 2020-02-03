@@ -4,12 +4,16 @@
 #include "Interface.hpp"
 #include "Offsets.hpp"
 #include "Server.hpp"
+#include "Spiderman.hpp"
 #include "Utils.hpp"
 #include "Variable.hpp"
 
 #include "SMSM.hpp"
 
 REDECL(Engine::TraceRay);
+REDECL(Engine::Disconnect);
+REDECL(Engine::SetSignonState);
+
 DETOUR(Engine::TraceRay, const Ray_t& ray, unsigned int fMask, ITraceFilter* pTraceFilter, CGameTrace* pTrace)
 {
     float requestResult = 0;
@@ -22,6 +26,20 @@ DETOUR(Engine::TraceRay, const Ray_t& ray, unsigned int fMask, ITraceFilter* pTr
         auto result = Engine::TraceRay(thisptr, ray, fMask, pTraceFilter, pTrace);
         return result;
     }
+}
+
+// CClientState::Disconnect
+DETOUR(Engine::Disconnect, bool bShowMainMenu)
+{
+    spiderman.wantsToSwing = false;
+    return Engine::Disconnect(thisptr, bShowMainMenu);
+}
+
+// CClientState::SetSignonState
+DETOUR(Engine::SetSignonState, int state, int count, void* unk)
+{
+    spiderman.wantsToSwing = false;
+    return Engine::SetSignonState(thisptr, state, count, unk);
 }
 
 Variable sv_cheats;
@@ -39,11 +57,14 @@ bool Engine::Init()
         typedef void* (*_GetClientState)();
         auto ClientCmd = engine->Original(Offsets::ClientCmd);
         auto GetClientState = Memory::Read<_GetClientState>(ClientCmd + Offsets::GetClientStateFunction);
-        auto cl = Interface::Create(GetClientState(), false);
+        auto cl = Interface::Create(GetClientState());
         if (cl) {
             auto SetSignonState = cl->Original(Offsets::SetSignonState);
             auto HostState_OnClientConnected = Memory::Read(SetSignonState + Offsets::HostState_OnClientConnected);
             this->hoststate = Memory::Deref<CHostState*>(HostState_OnClientConnected + Offsets::hoststate);
+
+            cl->Hook(Engine::SetSignonState_Hook, Engine::SetSignonState, Offsets::Disconnect - 1);
+            cl->Hook(Engine::Disconnect_Hook, Engine::Disconnect, Offsets::Disconnect);
         }
 
         Memory::Read<_Cbuf_AddText>(ClientCmd + Offsets::Cbuf_AddText, &this->Cbuf_AddText);
@@ -65,8 +86,7 @@ bool Engine::Init()
         this->ClientCommand = g_VEngineServer->Original<_ClientCommand>(Offsets::ClientCommand);
     }
 
-	
-	if (auto debugoverlay = Interface::Create(this->Name(), "VDebugOverlay0", false)) {
+    if (auto debugoverlay = Interface::Create(this->Name(), "VDebugOverlay0", false)) {
         AddLineOverlay = debugoverlay->Original<_AddLineOverlay>(Offsets::AddLineOverlay);
         Interface::Delete(debugoverlay);
     }

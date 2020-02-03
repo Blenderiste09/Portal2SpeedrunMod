@@ -131,23 +131,6 @@ void SMSM::ClientCommand(const char* fmt, ...) {
         engine->ClientCommand(nullptr, client, data);
     }
 }
-void SMSM::Setpos(const Vector& dest)
-{
-#ifdef _WIN32
-    auto slot = engine->GetActiveSplitScreenPlayerSlot();
-#else
-    auto slot = engine->GetActiveSplitScreenPlayerSlot(nullptr);
-#endif
-
-	std::string cmd = "setpos " + std::to_string(dest.x) + " " + std::to_string(dest.y) + " " + std::to_string(dest.z);
-
-    if (!sv_cheats.GetBool()) {
-        sv_cheats.SetValue(1);
-    }
-
-    smsm.ServerCommand(cmd.c_str());
-}
-
 void SMSM::Chat(const char* fmt, ...)
 {
     va_list argptr;

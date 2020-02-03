@@ -69,7 +69,6 @@ public:
     void ClientCommand(const char* fmt, ...);
     void Chat(const char* fmt, ...);
     void Cleanup();
-    void Setpos(const Vector &dest);
 
     void ForceAct5MenuBackground();
     bool ProcessScriptRequest(float accessType, int id, float value, float* result);
@@ -90,8 +89,8 @@ namespace ScriptAccessKey {
 enum SMSMParam {
     DialogueOff = 0,
     CelesteMode = 100,
-    DashRequested = 101
+    DashRequested = 101,
+    SpidermanMode = 102
 };
-
 
 extern SMSM smsm;

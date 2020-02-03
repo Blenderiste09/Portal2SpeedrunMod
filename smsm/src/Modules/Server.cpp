@@ -8,7 +8,7 @@
 #include "Console.hpp"
 #include "SMSM.hpp"
 #include "CelesteMoveset.hpp"
-
+#include "Spiderman.hpp"
 
 MDECL(Server::GetAbsOrigin, Vector, S_m_vecAbsOrigin);
 MDECL(Server::GetAbsAngles, QAngle, S_m_angAbsRotation);
@@ -23,10 +23,12 @@ REDECL(Server::ProcessMovement);
 DETOUR(Server::ProcessMovement, void* pPlayer, CMoveData* pMove) {
     auto result = Server::ProcessMovement(thisptr, pPlayer, pMove);
 
-    celesteMoveset.ProcessMovement(pPlayer, pMove);
-
-	server->pos = pMove->m_vecAbsOrigin;
+    server->pos = pMove->m_vecAbsOrigin;
     server->angle = pMove->m_vecAbsViewAngles;
+
+    celesteMoveset.ProcessMovement(pPlayer, pMove);
+    spiderman.ProcessMovement(pPlayer, pMove);
+
 
     return result;
 }

@@ -66,6 +66,13 @@ inline void VectorAdd(const Vector& a, const Vector& b, Vector& c)
     c.z = a.z + b.z;
 }
 
+inline void VectorSubstract(const Vector& a, const Vector& b, Vector& c)
+{
+    c.x = a.x - b.x;
+    c.y = a.y - b.y;
+    c.z = a.z - b.z;
+}
+
 inline void AngleVectors(const QAngle& angles, Vector* forward, Vector* right, Vector* up)
 {
     float sr, sp, sy, cr, cp, cy;

@@ -17,6 +17,7 @@ void Portal2::LoadOffsets()
     InternalSetFloatValue = 13; // ConVar
     InternalSetIntValue = 14; // ConVar
     ClientCmd = 7; // CEngineClient
+    Disconnect = 16; //  CClientState
     GetClientStateFunction = 4; // CEngineClient::ClientCmd
     Cbuf_AddText = 46; // CEngineClient::ClientCmd
     s_CommandBuffer = 82; // Cbuf_AddText
@@ -33,6 +34,7 @@ void Portal2::LoadOffsets()
     m_fFlags = 204; // CBaseEntity
     m_nTickBase = 3792; // CBaseEntity, m_nTickBase -> 3792
     AddLineOverlay = 4; // CIVDebugOverlay
+    m_bDucking = 2272; // CBaseEntity
 
     // client.dll
 

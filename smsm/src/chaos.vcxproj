@@ -181,6 +181,7 @@
     <ClCompile Include="Offsets.cpp" />
     <ClCompile Include="Plugin.cpp" />
     <ClCompile Include="Portal2.cpp" />
+    <ClCompile Include="Spiderman.cpp" />
     <ClCompile Include="Utils\Memory.cpp" />
     <ClCompile Include="Utils\SDK.cpp" />
     <ClCompile Include="Variable.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Offsets.hpp" />
     <ClInclude Include="Plugin.hpp" />
     <ClInclude Include="Portal2.hpp" />
+    <ClInclude Include="Spiderman.hpp" />
     <ClInclude Include="Utils.hpp" />
     <ClInclude Include="Utils\Math.hpp" />
     <ClInclude Include="Utils\Memory.hpp" />

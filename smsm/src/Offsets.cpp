@@ -19,6 +19,7 @@ int InternalSetIntValue;
 
 // CClientState
 int SetSignonState;
+int Disconnect = 16;
 
 // CVEngineServer
 int ClientCommand;
@@ -40,6 +41,7 @@ int m_fFlags;
 int m_nTickBase;
 int S_m_vecAbsOrigin;
 int S_m_angAbsRotation;
+int m_bDucking;
 
 // CServerGameDLL
 int Think;
