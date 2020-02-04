@@ -18,11 +18,13 @@ public:
 #endif
     using _ClientCommand = int(*)(void* thisptr, void* pEdict, const char* szFmt, ...);
     using _AddLineOverlay = int(__stdcall*)(const Vector& origin, const Vector& dest, int r, int g, int b, bool noDepthText, float duration);
+    using _TraceRay = void(__func*)(void* thisptr, const Ray_t& ray, unsigned int fMask, ITraceFilter* pTraceFilter, CGameTrace* pTrace);
 
     _GetActiveSplitScreenPlayerSlot GetActiveSplitScreenPlayerSlot = nullptr;
     _Cbuf_AddText Cbuf_AddText = nullptr;
     _ClientCommand ClientCommand = nullptr;
     _AddLineOverlay AddLineOverlay = nullptr;
+    _TraceRay TraceRay = nullptr;
 
     void* s_CommandBuffer = nullptr;
 
@@ -32,15 +34,12 @@ public:
     void Shutdown() override;
     const char* Name() override { return MODULE("engine"); }
 
-    
+
 	// CClientState::Disconnect
     DECL_DETOUR(Disconnect, bool bShowMainMenu);
 
 	// CClientState::SetSignonState
     DECL_DETOUR(SetSignonState, int state, int count, void* unk);
-
-	// IEngineTrace::TraceRay
-    DECL_DETOUR(TraceRay, const Ray_t& ray, unsigned int fMask, ITraceFilter* pTraceFilter, CGameTrace* pTrace);
 
     template <typename T>
     bool ThrowRay(Vector& origin, Vector& direction, CGameTrace& tr, T& traceFilter, float maxTraceLength = MAX_TRACE_LENGTH)

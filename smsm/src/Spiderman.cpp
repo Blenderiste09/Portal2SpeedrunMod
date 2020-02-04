@@ -16,6 +16,8 @@ Spiderman::Spiderman() : wantsToSwing(false)
 
 void Spiderman::ProcessMovement(void* pPlayer, CMoveData* pMove)
 {
+	if (smsm.GetMode() != SpidermanMode) return;
+
     int tickBase = *reinterpret_cast<int*>((uintptr_t)pPlayer + Offsets::m_nTickBase);
     if (tickBase > this->lastTickBase) {
         float ft = (tickBase - lastTickBase) / 60.0f;
@@ -86,14 +88,13 @@ void Spiderman::Swing(void* pPlayer, CMoveData* pMove, float ft)
     }
 }
 
-void IN_WebUp(const CCommand& args)
-{
-    if (smsm.modeParams[SpidermanMode]) {
-        if (spiderman.wantsToSwing) {
-            spiderman.wantsToSwing = false;
-        } else {
-            spiderman.ThrowWeb();
-        }
+void IN_WebUp(const CCommand &args) {
+    if (smsm.GetMode() != SpidermanMode) return;
+
+    if (spiderman.wantsToSwing) {
+        spiderman.wantsToSwing = false;
+    } else {
+        spiderman.ThrowWeb();
     }
 }
 

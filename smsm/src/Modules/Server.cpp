@@ -21,6 +21,9 @@ void* Server::GetPlayer(int index)
 // CGameMovement::ProcessMovement
 REDECL(Server::ProcessMovement);
 DETOUR(Server::ProcessMovement, void* pPlayer, CMoveData* pMove) {
+
+    celesteMoveset.PreProcessMovement(pPlayer, pMove);
+
     auto result = Server::ProcessMovement(thisptr, pPlayer, pMove);
 
     server->pos = pMove->m_vecAbsOrigin;

@@ -11,6 +11,8 @@ extern int m_pConCommandList;
 // CEngineClient
 extern int ClientCmd;
 extern int GetActiveSplitScreenPlayerSlot;
+extern int RenderView;
+extern int HudUpdate;
 
 // ConVar
 extern int InternalSetValue;
@@ -36,16 +38,21 @@ extern int AddLineOverlay;
 // IEngineTrace
 extern int TraceRay;
 
+// CClientTools
+extern int NextParticleSystem;
+
 // CBaseEntity
 extern int m_fFlags;
 extern int m_nTickBase;
 extern int S_m_vecAbsOrigin;
 extern int S_m_angAbsRotation;
-extern int m_bDucking;
 
 // CServerGameDLL
 extern int Think;
+extern int m_bDucking;
 
+// CScriptManager
+extern int CreateVM;
 
 // Others
 extern int GetClientStateFunction;

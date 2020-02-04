@@ -30,6 +30,7 @@ void Portal2::LoadOffsets()
     AutoCompletionFunc = 66; // listdemo_CompletionFunc
     ClientCommand = 39; // CVEngineServer
     TraceRay = 5; // IEngineTrace
+    NextParticleSystem = 54; //IClientTools
     ProcessMovement = 1; // CGameMovement
     m_fFlags = 204; // CBaseEntity
     m_nTickBase = 3792; // CBaseEntity, m_nTickBase -> 3792
@@ -41,6 +42,8 @@ void Portal2::LoadOffsets()
     GetHud = 125; // cc_leaderboard_enable
     FindElement = 135; // cc_leaderboard_enable
     ChatPrintf = 22; // CBaseHudChat
+    RenderView = 26;
+    HudUpdate = 11;
 
 	// server.dll
     S_m_vecAbsOrigin = 460; // CBaseEntity
@@ -55,6 +58,10 @@ void Portal2::LoadOffsets()
     UnregisterConCommand = 10; // CCvar
     FindCommandBase = 13; // CCVar
     m_pConCommandList = 48; // CCvar
+
+    // vscript.dll
+
+    CreateVM = 8;
 }
 const char* Portal2::Version()
 {

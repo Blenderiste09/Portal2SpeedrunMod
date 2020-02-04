@@ -11,6 +11,8 @@ int m_pConCommandList;
 // CEngineClient
 int ClientCmd;
 int GetActiveSplitScreenPlayerSlot;
+int RenderView;
+int HudUpdate;
 
 // ConVar
 int InternalSetValue;
@@ -19,7 +21,7 @@ int InternalSetIntValue;
 
 // CClientState
 int SetSignonState;
-int Disconnect = 16;
+int Disconnect;
 
 // CVEngineServer
 int ClientCommand;
@@ -36,15 +38,21 @@ int m_bWaitEnabled;
 // IEngineTrace
 int TraceRay;
 
+// CClientTools
+int NextParticleSystem;
+
 // CBaseEntity
 int m_fFlags;
 int m_nTickBase;
 int S_m_vecAbsOrigin;
 int S_m_angAbsRotation;
-int m_bDucking;
 
 // CServerGameDLL
 int Think;
+int m_bDucking;
+
+// CScriptManager
+int CreateVM;
 
 // Others
 int GetClientStateFunction;
